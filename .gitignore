@@ -3,3 +3,8 @@ __pychache__
 
 /build
 /dist
+
+*.txt
+*.wav
+*.mp3
+.DS_Store
