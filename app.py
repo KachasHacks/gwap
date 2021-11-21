@@ -11,25 +11,34 @@ load_dotenv()
 
 client = ApiClient(base_url="https://app.modzy.com/api", api_key=os.environ["MODZY_API_KEY"])
 
-sources = {}
-sound = am.from_mp3('mc8.mp3')
-sound = sound.set_frame_rate(16000)
-sound.export('test.wav', format='wav')
-#Add any number of inputs
-sources["my-input"] = {
-    "word.txt": file_to_bytes('word.txt'),
-    "input.wav": file_to_bytes('test.wav'),
-}
-#Once you are ready, submit the job
+
+def process_words(words):
+    with open("words.txt", "w") as f:
+        for word in words:
+            f.write(f"{word}\n")
+
+def process_audio(file):
+    sound = am.from_file(file)
+    sound = sound.set_frame_rate(16000)
+    sound.export('temp.wav', format='wav')
 
 @click.command()
-def hello():
-    click.echo("Hello world")
+@click.argument('words', nargs=-1)
+@click.argument('file', nargs=1)
+def au_grep(words, file):
+    process_words(words)
+    process_audio(file)
+    sources = {}
+    sources["my-input"] = {
+        "word.txt": file_to_bytes('words.txt'),
+        "input.wav": file_to_bytes('temp.wav'),
+    }
     job = client.jobs.submit_file("s25ge4ufw4", "0.0.1", sources)
-    click.echo(f"job: {job}")
     results = client.results.block_until_complete(job, timeout=None)
-    click.echo(results)
-    pprint.pprint(results)
+    if results["failed"] == 0:
+        for result in results["results"]["my-input"]["results.json"]:
+            # Note that the audio keyword spotting has a weird key for start_time: "start_time " with a space
+            click.echo(f'{result["word"]}, Start time: {result["start_time "]}, Duration: {result["duration"]}s')
 
 if __name__ == "__main__":
-    hello()
+    au_grep()
