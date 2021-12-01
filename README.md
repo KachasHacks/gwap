@@ -1,4 +1,4 @@
-GWAP: Globally search for words in audio files and print lines.
+# GWAP: Globally search for words in audio files and print lines.
 
 An audio version of grep using modzy audio search models to search for a word/s in audio files in a folder.
 
