@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Eel Demo</title>
+    <script type="text/javascript" src="/eel.js"></script>
+    <script type="text/javascript">
+      async function pick_file() {
+        let folder = document.getElementById("input-box").value;
+        let file_div = document.getElementById("file-name");
+
+        // Call into Python so we can access the file system
+        let spinner = document.getElementById("lds-spinner");
+        spinner.style.visibility = "visible";
+        let results = await eel.pick_file(folder)();
+        spinner.style.visibility = "hidden";
+			  
+        file_div.innerHTML = results;
+      }
+    </script>
+    <link href="./css/full.css" rel="stylesheet" />
+    <link href="./css/spinner.css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <form onsubmit="pick_file(); return false;">
+      <input
+        id="input-box"
+        placeholder="Type folder here"
+        value="C:\Windows"
+        class="p-form-text p-form-no-validate"
+      />
+      <button type="submit" class="p-form-button p-form-send">
+        Analyze Folder
+      </button>
+    </form>
+    <div id="file-name">---</div>
+    <div id="lds-spinner" class="lds-spinner" style="visibility: hidden">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+    <script type="text/javascript" src="./js/actions.js"></script>
+    <script type="text/javascript" src="./js/modals.js"></script>
+    <script type="text/javascript" src="./js/segmented_controls.js"></script>
+    <script type="text/javascript" src="./js/tabs.js"></script>
+  </body>
+</html>

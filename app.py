@@ -5,6 +5,7 @@ from modzy import ApiClient
 from modzy._util import file_to_bytes
 from dotenv import load_dotenv
 from pydub import AudioSegment as am
+from progress.spinner import Spinner
 
 load_dotenv()
 
@@ -78,6 +79,13 @@ def au_grep(words, file, r):
             "input.wav": file_to_bytes(f'{name}'),
         }
         job = client.jobs.submit_file("s25ge4ufw4", "0.0.1", sources)
+        # spinner = Spinner('Loading ')
+        # x = 0
+        # import time
+        # while x < 10:
+            # time.sleep(1)
+            # x += 1
+            # spinner.next()
         results = client.results.block_until_complete(job, timeout=None)
         if results["failed"] == 0:
             for result in results["results"]["my-input"]["results.json"]:
